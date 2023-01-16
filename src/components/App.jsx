@@ -1,16 +1,65 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
-};
+import { Component } from 'react';
+import { ContactForm } from './ContactForm/ContactForm';
+import { ContactList } from './ContactList/ContactList';
+import { Filter } from './Filter/Filter';
+import { nanoid } from 'nanoid';
+import { Phonebook } from './App.styled';
+export class App extends Component {
+  state = {
+    contacts: [],
+    filter: '',
+  };
+  addContact = ({ name, number }) => {
+    const names = this.state.contacts.map(contact =>
+      contact.name.toLowerCase()
+    );
+    const lowerCaseName = name.toLowerCase();
+    if (names.indexOf(lowerCaseName) >= 0) {
+      alert(name + 'is already in contacts');
+      return;
+    }
+    this.setState(prevState => {
+      return {
+        contacts: [{ name, number, id: nanoid() }, ...prevState.contacts],
+      };
+    });
+  };
+  removeName = idx => {
+    this.setState(prevState => {
+      let newContacts = [];
+      prevState.contacts.forEach(contact => {
+        if (contact.id !== idx) {
+          newContacts.push(contact);
+        }
+      });
+      return { contacts: newContacts };
+    });
+  };
+  handleFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
+  };
+  getVisibleContacts = () => {
+    let { filter, contacts } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+    const newArray = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+    return newArray;
+  };
+  render() {
+    return (
+      <>
+        <Phonebook>
+          <h1>Phonebook</h1>
+          <ContactForm onSubmit={this.addContact} />
+          <h2>Contacts</h2>
+          <Filter onChange={this.handleFilter} value={this.state.filter} />
+          <ContactList
+            contacts={this.getVisibleContacts()}
+            onRemove={this.removeName}
+          />
+        </Phonebook>
+      </>
+    );
+  }
+}
