@@ -3,7 +3,7 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 import { nanoid } from 'nanoid';
-import { Phonebook } from './App.styled';
+import { ContactsTitle, Phonebook, PhonebookTitle } from './App.styled';
 export class App extends Component {
   state = {
     contacts: [],
@@ -50,9 +50,9 @@ export class App extends Component {
     return (
       <>
         <Phonebook>
-          <h1>Phonebook</h1>
+          <PhonebookTitle>Phonebook</PhonebookTitle>
           <ContactForm onSubmit={this.addContact} />
-          <h2>Contacts</h2>
+          <ContactsTitle>Contacts</ContactsTitle>
           <Filter onChange={this.handleFilter} value={this.state.filter} />
           <ContactList
             contacts={this.getVisibleContacts()}
